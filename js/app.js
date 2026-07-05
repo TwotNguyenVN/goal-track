@@ -16,10 +16,75 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Không thể tải dữ liệu');
             
             matchesData = await response.json();
+            renderFeaturedMatch(matchesData);
             renderMatches(matchesData);
         } catch (error) {
             console.error('Error fetching matches:', error);
             matchesGrid.innerHTML = '<div class="error">Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.</div>';
+        }
+    };
+
+    // Render featured match
+    const renderFeaturedMatch = (matches) => {
+        const featuredSection = document.getElementById('upcoming-match-section');
+        const now = new Date();
+        
+        // Find first live match or next upcoming match
+        let featured = matches.find(m => m.status === 'live');
+        if (!featured) {
+            const upcoming = matches.filter(m => m.status === 'upcoming' && new Date(m.date) > now)
+                                    .sort((a,b) => new Date(a.date) - new Date(b.date));
+            if (upcoming.length > 0) featured = upcoming[0];
+        }
+
+        if (featured) {
+            const statusClass = featured.status === 'live' ? 'status-live' : 'status-upcoming';
+            const statusText = featured.status === 'live' ? '🔴 Đang diễn ra' : 'Sắp diễn ra';
+            
+            const homeFlagHTML = featured.home_flag_local 
+                ? `<img src="${featured.home_flag_local}" alt="${featured.home_team} flag" class="team-flag">` 
+                : `<span class="flag-placeholder"></span>`;
+            
+            const awayFlagHTML = featured.away_flag_local 
+                ? `<img src="${featured.away_flag_local}" alt="${featured.away_team} flag" class="team-flag">` 
+                : `<span class="flag-placeholder"></span>`;
+                
+            let stageDisplay = featured.stage;
+            if (featured.group) stageDisplay += ` &bull; ${featured.group}`;
+
+            let linksHTML = '';
+            if (featured.links && featured.links.live && featured.links.live.length > 0) {
+                featured.links.live.forEach(liveLink => {
+                    linksHTML += `<a href="${liveLink.url}" target="_blank" class="btn btn-primary" title="Xem trực tiếp">▶ ${liveLink.name}</a>`;
+                });
+            }
+
+            featuredSection.innerHTML = `
+                <div class="featured-header">Trận đấu tâm điểm</div>
+                <div class="match-list-item featured-item">
+                    <div class="match-status-badge ${statusClass}">${statusText}</div>
+                    <div class="match-stage" style="margin-bottom: 0.5rem; text-align: center;">
+                        ${stageDisplay} &bull; ${formatTime(featured.date)} - ${formatDay(featured.date)}
+                    </div>
+                    <div class="match-main">
+                        <div class="team team-home">
+                            <span class="team-name">${featured.home_team}</span>
+                            ${homeFlagHTML}
+                        </div>
+                        <div class="score-container" style="font-size: 1.5rem;">
+                            ${featured.status === 'upcoming' ? 'VS' : (featured.home_score + ' - ' + featured.away_score)}
+                        </div>
+                        <div class="team team-away">
+                            ${awayFlagHTML}
+                            <span class="team-name">${featured.away_team}</span>
+                        </div>
+                    </div>
+                    ${linksHTML ? `<div class="links-container" style="justify-content: center; margin-top: 1rem;">${linksHTML}</div>` : ''}
+                </div>
+            `;
+            featuredSection.style.display = 'block';
+        } else {
+            featuredSection.style.display = 'none';
         }
     };
 
