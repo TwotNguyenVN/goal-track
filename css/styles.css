@@ -420,7 +420,6 @@ header p {
     .links-container {
         padding-top: 0.5rem;
         gap: 0.35rem;
-        justify-content: flex-start;
     }
     .btn {
         padding: 0.3rem 0.5rem;
