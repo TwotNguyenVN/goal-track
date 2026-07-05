@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorldCup Live Hub 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <meta name="description" content="Trang web cập nhật nhanh thông tin các trận đấu World Cup 2026. Thiết kế hiện đại, dễ dàng tra cứu tỷ số và lịch thi đấu.">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WorldCup 2026 Live Hub</h1>
+            <p>Theo dõi tỷ số, lịch thi đấu và thông tin các trận đấu mới nhất</p>
+        </header>
+
+        <main>
+            <div class="controls">
+                <input type="text" id="search" class="search-input" placeholder="Tìm kiếm đội bóng...">
+                <select id="status-filter" class="filter-select">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="live">Đang diễn ra</option>
+                    <option value="upcoming">Sắp tới</option>
+                    <option value="finished">Đã kết thúc</option>
+                </select>
+            </div>
+
+            <div class="stage-tabs-container">
+                <div class="stage-tabs" id="stage-tabs">
+                    <button class="stage-tab active" data-stage="all">Tất cả</button>
+                    <button class="stage-tab" data-stage="Vòng đấu bảng">Vòng bảng</button>
+                    <button class="stage-tab" data-stage="Vòng 32 đội">32 đội</button>
+                    <button class="stage-tab" data-stage="Vòng 16 đội">16 đội</button>
+                    <button class="stage-tab" data-stage="Tứ kết">Tứ kết</button>
+                    <button class="stage-tab" data-stage="Bán kết">Bán kết</button>
+                    <button class="stage-tab" data-stage="Hạng ba">Hạng 3</button>
+                    <button class="stage-tab" data-stage="Chung kết">Chung kết</button>
+                </div>
+            </div>
+
+            <div id="matches-grid" class="matches-grid">
+                <!-- Data will be populated here by JavaScript -->
+                <noscript>
+                    <div class="error">Vui lòng bật JavaScript để xem lịch thi đấu và kết quả.</div>
+                </noscript>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

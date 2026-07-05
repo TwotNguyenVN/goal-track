@@ -1,0 +1,37 @@
+name: Scrape World Cup Data
+
+on:
+  schedule:
+    # Chạy mỗi giờ vào phút thứ 0 (bạn có thể thay đổi cron tùy nhu cầu)
+    - cron: '0 * * * *'
+  workflow_dispatch: # Cho phép kích hoạt thủ công từ giao diện GitHub Actions
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Install Playwright Browsers
+      run: npx playwright install chromium --with-deps
+
+    - name: Run Scraping Script
+      run: npm run scrape
+
+    - name: Commit and Push changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add data/matches.json
+        # Chỉ commit nếu có thay đổi trong matches.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update match schedule and scores" && git push)
