@@ -122,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Group matches by day
         const grouped = {};
         matches.forEach(match => {
             const dayStr = formatDay(match.date);
@@ -132,10 +131,42 @@ document.addEventListener('DOMContentLoaded', () => {
             grouped[dayStr].push(match);
         });
 
-        let html = '';
-        
+        // Determine if we are filtering
+        const isFiltered = searchInput.value.trim() !== '' || 
+                           filterSelect.value !== 'all' || 
+                           currentStageFilter !== 'all';
+
+        // Find target date (today or most recent past) for splitting
+        let targetDateStr = null;
+        if (!isFiltered) {
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+            let targetDateObj = new Date(0);
+
+            for (const [dayStr, dayMatches] of Object.entries(grouped)) {
+                const matchDate = new Date(dayMatches[0].date);
+                matchDate.setHours(0, 0, 0, 0);
+                if (matchDate <= today && matchDate > targetDateObj) {
+                    targetDateObj = matchDate;
+                    targetDateStr = dayStr;
+                }
+            }
+            if (!targetDateStr && Object.keys(grouped).length > 0) {
+                targetDateStr = Object.keys(grouped)[0];
+            }
+        }
+
+        let pastHtml = '';
+        let futureHtml = '';
+        let pastMatchesCount = 0;
+        let isPast = !isFiltered; // If filtered, nothing is "past" (we show everything)
+
         for (const [dayStr, dayMatches] of Object.entries(grouped)) {
-            html += `
+            if (isPast && dayStr === targetDateStr) {
+                isPast = false;
+            }
+
+            let dayHtml = `
                 <div class="date-section">
                     <h2 class="date-header"><span class="date-bar"></span> ${dayStr}</h2>
                     <div class="matches-list">
@@ -175,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ? `<img src="${match.away_flag_local}" alt="${match.away_team} flag" class="team-flag">` 
                     : `<span class="flag-placeholder"></span>`;
 
-                html += `
+                dayHtml += `
                     <div class="match-list-item">
                         <div class="match-status-badge ${statusClass}">
                             ${match.status === 'live' ? '🔴 ' : ''}${statusText}
@@ -199,60 +230,64 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${linksHTML ? `<div class="links-container">${linksHTML}</div>` : ''}
                     </div>
                 `;
+
+                if (isPast) {
+                    pastMatchesCount++;
+                }
             });
             
-            html += `
+            dayHtml += `
+                    </div>
+                </div>
+            `;
+
+            if (isPast) {
+                pastHtml += dayHtml;
+            } else {
+                futureHtml += dayHtml;
+            }
+        }
+
+        let finalHtml = '';
+        
+        if (pastMatchesCount > 0) {
+            finalHtml += `
+                <div class="past-matches-wrapper">
+                    <button id="toggle-past-matches" class="btn btn-secondary toggle-past-btn" style="width: 100%; margin-bottom: 2rem; padding: 1rem; font-size: 1rem;">
+                        ⏬ Xem các trận đấu trước đó (${pastMatchesCount} trận)
+                    </button>
+                    <div id="past-matches-container" style="display: none;">
+                        ${pastHtml}
                     </div>
                 </div>
             `;
         }
 
-        matchesGrid.innerHTML = html;
+        finalHtml += futureHtml;
 
-        if (initialLoad) {
-            scrollToLatestMatchDay(grouped);
-            initialLoad = false;
+        matchesGrid.innerHTML = finalHtml;
+
+        // Attach event listener to the toggle button if it exists
+        const toggleBtn = document.getElementById('toggle-past-matches');
+        const pastContainer = document.getElementById('past-matches-container');
+        
+        if (toggleBtn && pastContainer) {
+            toggleBtn.addEventListener('click', () => {
+                const isHidden = pastContainer.style.display === 'none';
+                if (isHidden) {
+                    pastContainer.style.display = 'block';
+                    toggleBtn.innerHTML = `⏫ Thu gọn các trận đấu trước đó`;
+                } else {
+                    pastContainer.style.display = 'none';
+                    toggleBtn.innerHTML = `⏬ Xem các trận đấu trước đó (${pastMatchesCount} trận)`;
+                    // Scroll back up slightly to avoid losing context when collapsing
+                    toggleBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
         }
     };
 
-    const scrollToLatestMatchDay = (grouped) => {
-        const today = new Date();
-        today.setHours(23, 59, 59, 999); // End of today
 
-        let targetDateStr = null;
-        let targetDateObj = new Date(0); // Start epoch
-
-        for (const [dayStr, dayMatches] of Object.entries(grouped)) {
-            const matchDate = new Date(dayMatches[0].date);
-            matchDate.setHours(0, 0, 0, 0);
-
-            // Find the most recent date that is less than or equal to today
-            if (matchDate <= today) {
-                if (matchDate > targetDateObj) {
-                    targetDateObj = matchDate;
-                    targetDateStr = dayStr;
-                }
-            }
-        }
-
-        // If no past/current matches exist (e.g. tournament hasn't started), scroll to the very first match
-        if (!targetDateStr) {
-            targetDateStr = Object.keys(grouped)[0];
-        }
-
-        if (targetDateStr) {
-            const headers = document.querySelectorAll('.date-header');
-            for (const header of headers) {
-                if (header.textContent.includes(targetDateStr)) {
-                    // Small delay to ensure rendering is completely done
-                    setTimeout(() => {
-                        header.parentElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 500); // 0.5s delay for smooth UX
-                    break;
-                }
-            }
-        }
-    };
 
     // Filter logic
     let currentStageFilter = 'all';
