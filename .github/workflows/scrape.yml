@@ -1,37 +1,44 @@
-name: Scrape World Cup Data
+name: Auto Scrape World Cup Scores
 
 on:
   schedule:
-    # Chạy mỗi giờ vào phút thứ 0 (bạn có thể thay đổi cron tùy nhu cầu)
-    - cron: '0 * * * *'
-  workflow_dispatch: # Cho phép kích hoạt thủ công từ giao diện GitHub Actions
+    - cron: '0 */4 * * *' # Chạy mỗi 4 tiếng (Tuỳ chỉnh theo nhu cầu)
+  workflow_dispatch: # Cho phép bấm chạy thủ công trên giao diện GitHub
 
 jobs:
-  scrape:
+  scrape-and-update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Cấp quyền push code
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-    - name: Install Dependencies
-      run: npm install
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Install Playwright Browsers
-      run: npx playwright install chromium --with-deps
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
 
-    - name: Run Scraping Script
-      run: npm run scrape
+      - name: Run Scraper
+        run: npm run scrape
 
-    - name: Commit and Push changes
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add data/matches.json
-        # Chỉ commit nếu có thay đổi trong matches.json
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update match schedule and scores" && git push)
+      - name: Check for Changes
+        id: git-check
+        run: |
+          git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and Push Changes
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/matches.json
+          git commit -m "Auto-update match scores [skip ci]"
+          git push
