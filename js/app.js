@@ -54,9 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const generateFeaturedMatchHTML = (featured, title) => {
         const statusClass = featured.status === 'live' ? 'status-live' : (featured.status === 'finished' ? 'status-finished' : 'status-upcoming');
-        let statusText = 'Sắp diễn ra';
+        let statusText = 'Dự Đoán';
         if (featured.status === 'live') statusText = '🔴 Đang diễn ra';
-        if (featured.status === 'finished') statusText = 'Kết thúc';
+        if (featured.status === 'finished') statusText = 'Kết Thúc';
         
         const homeIsUndetermined = featured.home_team && (featured.home_team.startsWith('Thắng trận') || featured.home_team.startsWith('Thua trận'));
         const awayIsUndetermined = featured.away_team && (featured.away_team.startsWith('Thắng trận') || featured.away_team.startsWith('Thua trận'));
@@ -111,8 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const generateMatchListItemHTML = (match) => {
         const statusClass = `status-${match.status}`;
-        const statusText = match.status === 'live' ? 'Đang đá' : 
-                         match.status === 'finished' ? 'Kết thúc' : 'Dự đoán';
+        const statusText = match.status === 'live' ? 'Đang diễn ra' : 
+                         match.status === 'finished' ? 'Kết Thúc' : 'Dự Đoán';
         
         const scoreDisplay = match.status === 'upcoming' 
             ? `<span class="time-only">${formatTime(match.date)}</span>`
