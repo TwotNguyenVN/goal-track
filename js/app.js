@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateFeaturedMatchHTML = (featured, title) => {
         const statusClass = featured.status === 'live' ? 'status-live' : (featured.status === 'finished' ? 'status-finished' : 'status-upcoming');
         let statusText = 'Dự Đoán';
-        if (featured.status === 'live') statusText = '🔴 Đang diễn ra';
+        if (featured.status === 'live') statusText = '🔵 Đang diễn ra';
         if (featured.status === 'finished') statusText = 'Kết Thúc';
         
         const homeIsUndetermined = featured.home_team && (featured.home_team.startsWith('Thắng trận') || featured.home_team.startsWith('Thua trận'));
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
             <div class="match-list-item">
                 <div class="match-status-badge ${statusClass}">
-                    ${match.status === 'live' ? '🔴 ' : ''}${statusText}
+                    ${match.status === 'live' ? '🔵 ' : ''}${statusText}
                 </div>
                 <div class="match-main">
                     <div class="team team-home">
