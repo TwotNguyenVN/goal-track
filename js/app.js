@@ -77,11 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let linksHTML = '';
         if (featured.links && featured.links.live && featured.links.live.length > 0) {
             featured.links.live.forEach(liveLink => {
-                linksHTML += `<a href="${liveLink.url}" target="_blank" class="btn btn-primary" title="Xem trực tiếp">▶ ${liveLink.name}</a>`;
+                linksHTML += `<a href="${liveLink.url}" target="_blank" class="btn btn-primary" title="Xem trực tiếp">${liveLink.name}</a>`;
             });
         }
         if (featured.links && featured.links.replay) {
-            linksHTML += `<a href="${featured.links.replay}" target="_blank" class="btn btn-secondary" title="Xem lại toàn trận">⏪ Xem lại</a>`;
+            linksHTML += `<a href="${featured.links.replay}" target="_blank" class="btn btn-secondary" title="Xem lại toàn trận">Xem lại</a>`;
         }
 
         return `
@@ -122,11 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (match.links) {
             if (match.links.live && match.links.live.length > 0) {
                 match.links.live.forEach(liveLink => {
-                    linksHTML += `<a href="${liveLink.url}" target="_blank" class="btn btn-primary" title="Xem trực tiếp">▶ ${liveLink.name}</a>`;
+                    linksHTML += `<a href="${liveLink.url}" target="_blank" class="btn btn-primary" title="Xem trực tiếp">${liveLink.name}</a>`;
                 });
             }
             if (match.links.replay) {
-                linksHTML += `<a href="${match.links.replay}" target="_blank" class="btn btn-secondary" title="Xem lại toàn trận">⏪ Xem lại</a>`;
+                linksHTML += `<a href="${match.links.replay}" target="_blank" class="btn btn-secondary" title="Xem lại toàn trận">Xem lại</a>`;
             }
         }
 
