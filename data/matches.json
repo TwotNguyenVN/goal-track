@@ -66,7 +66,7 @@
   {
     "id": "3",
     "home_team": "Canada",
-    "away_team": "Bosnia &amp; Herz.",
+    "away_team": "Bosnia & Herz.",
     "stage": "Vòng đấu bảng",
     "status": "finished",
     "home_score": 1,
@@ -93,7 +93,7 @@
     "home_flag": "https://is.vnecdn.net/objects/teams/5529.png?v=1",
     "away_flag": "https://is.vnecdn.net/objects/teams/1113.png?v=1",
     "home_flag_local": "img/flags/Canada.png",
-    "away_flag_local": "img/flags/Bosnia_ampamp;_Herz..png"
+    "away_flag_local": "img/flags/Bosnia__amp__Herz_.png"
   },
   {
     "id": "4",
@@ -802,7 +802,7 @@
   {
     "id": "26",
     "home_team": "Thụy Sĩ",
-    "away_team": "Bosnia &amp; Herz.",
+    "away_team": "Bosnia & Herz.",
     "stage": "Vòng đấu bảng",
     "status": "finished",
     "home_score": 4,
@@ -829,7 +829,7 @@
     "home_flag": "https://is.vnecdn.net/objects/teams/15.png?v=1",
     "away_flag": "https://is.vnecdn.net/objects/teams/1113.png?v=1",
     "home_flag_local": "img/flags/Th_y_S_.png",
-    "away_flag_local": "img/flags/Bosnia_ampamp;_Herz..png"
+    "away_flag_local": "img/flags/Bosnia__amp__Herz_.png"
   },
   {
     "id": "27",
@@ -1569,7 +1569,7 @@
   },
   {
     "id": "50",
-    "home_team": "Bosnia &amp; Herz.",
+    "home_team": "Bosnia & Herz.",
     "away_team": "Qatar",
     "stage": "Vòng đấu bảng",
     "status": "finished",
@@ -1596,7 +1596,7 @@
     "date": "2026-06-24T17:00:00.000Z",
     "home_flag": "https://is.vnecdn.net/objects/teams/1113.png?v=1",
     "away_flag": "https://is.vnecdn.net/objects/teams/1569.png?v=1",
-    "home_flag_local": "img/flags/Bosnia_ampamp;_Herz..png",
+    "home_flag_local": "img/flags/Bosnia__amp__Herz_.png",
     "away_flag_local": "img/flags/Qatar.png"
   },
   {
@@ -2594,7 +2594,7 @@
   {
     "id": "82",
     "home_team": "Mỹ",
-    "away_team": "Bosnia &amp; Herz.",
+    "away_team": "Bosnia & Herz.",
     "stage": "Vòng 32 đội",
     "status": "finished",
     "home_score": 2,
@@ -2621,7 +2621,7 @@
     "home_flag": "https://is.vnecdn.net/objects/teams/2384.png?v=1",
     "away_flag": "https://is.vnecdn.net/objects/teams/1113.png?v=1",
     "home_flag_local": "img/flags/M_.png",
-    "away_flag_local": "img/flags/Bosnia_ampamp;_Herz..png"
+    "away_flag_local": "img/flags/Bosnia__amp__Herz_.png"
   },
   {
     "id": "83",
