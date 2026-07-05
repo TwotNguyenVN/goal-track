@@ -68,8 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="match-main">
                         <div class="team team-home">
-                            <span class="team-name">${featured.home_team}</span>
                             ${homeFlagHTML}
+                            <span class="team-name">${featured.home_team}</span>
                         </div>
                         <div class="score-container" style="font-size: 1.5rem;">
                             ${featured.status === 'upcoming' ? 'VS' : (featured.home_score + ' - ' + featured.away_score)}
@@ -180,8 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div class="match-main">
                             <div class="team team-home">
-                                <span class="team-name">${match.home_team}</span>
                                 ${homeFlagHTML}
+                                <span class="team-name">${match.home_team}</span>
                             </div>
                             <div class="score-container">
                                 ${scoreDisplay}
