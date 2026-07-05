@@ -94,7 +94,9 @@
     "date": "2026-06-12T01:00:00.000Z",
     "group": "Bảng A",
     "home_flag": "https://is.vnecdn.net/objects/teams/5529.png?v=1",
-    "home_flag_local": "img/flags/Canada.png"
+    "home_flag_local": "img/flags/Canada.png",
+    "away_flag_local": "img/flags/Bosnia__amp__Herz_.png",
+    "away_flag": "https://is.vnecdn.net/objects/teams/5527.png?v=1"
   },
   {
     "id": "4",
@@ -851,7 +853,9 @@
     "date": "2026-06-17T22:00:00.000Z",
     "group": "Bảng E",
     "home_flag": "https://is.vnecdn.net/objects/teams/15.png?v=1",
-    "home_flag_local": "img/flags/Th_y_S_.png"
+    "home_flag_local": "img/flags/Th_y_S_.png",
+    "away_flag_local": "img/flags/Bosnia__amp__Herz_.png",
+    "away_flag": "https://is.vnecdn.net/objects/teams/5527.png?v=1"
   },
   {
     "id": "27",
@@ -1641,7 +1645,9 @@
     "date": "2026-06-23T22:00:00.000Z",
     "group": "Bảng I",
     "away_flag": "https://is.vnecdn.net/objects/teams/1569.png?v=1",
-    "away_flag_local": "img/flags/Qatar.png"
+    "away_flag_local": "img/flags/Qatar.png",
+    "home_flag_local": "img/flags/Bosnia__amp__Herz_.png",
+    "home_flag": "https://is.vnecdn.net/objects/teams/5527.png?v=1"
   },
   {
     "id": "51",
@@ -2695,7 +2701,9 @@
     "date": "2026-06-30T19:00:00.000Z",
     "group": null,
     "home_flag": "https://is.vnecdn.net/objects/teams/2384.png?v=1",
-    "home_flag_local": "img/flags/M_.png"
+    "home_flag_local": "img/flags/M_.png",
+    "away_flag_local": "img/flags/Bosnia__amp__Herz_.png",
+    "away_flag": "https://is.vnecdn.net/objects/teams/5527.png?v=1"
   },
   {
     "id": "83",
