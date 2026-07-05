@@ -9,7 +9,7 @@
     --primary-hover: #2563eb;
     --live: #ef4444;
     --finished: #10b981;
-    --upcoming: #64748b;
+    --upcoming: #f59e0b;
     --header-accent: #10b981;
 }
 
@@ -213,7 +213,7 @@ header p {
 
 .status-live { background: rgba(239, 68, 68, 0.15); color: var(--live); border: 1px solid rgba(239, 68, 68, 0.3); }
 .status-finished { background: rgba(16, 185, 129, 0.15); color: var(--finished); border: 1px solid rgba(16, 185, 129, 0.3); }
-.status-upcoming { background: rgba(100, 116, 139, 0.15); color: var(--upcoming); border: 1px solid rgba(100, 116, 139, 0.3); }
+.status-upcoming { background: rgba(245, 158, 11, 0.15); color: var(--upcoming); border: 1px solid rgba(245, 158, 11, 0.3); }
 
 .match-main {
     display: flex;
