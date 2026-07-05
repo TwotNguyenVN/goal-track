@@ -3245,8 +3245,8 @@
     "away_team": "Na Uy",
     "stage": "Vòng 16 đội",
     "status": "finished",
-    "home_score": 0,
-    "away_score": 1,
+    "home_score": 1,
+    "away_score": 2,
     "stadium": "TBD",
     "links": {
       "live": [
