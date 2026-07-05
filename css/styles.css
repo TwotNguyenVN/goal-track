@@ -225,7 +225,7 @@ header p {
 }
 
 .team-flag {
-    width: 32px;
+    width: 48px;
     height: auto;
     border-radius: 2px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
@@ -353,7 +353,7 @@ header p {
         font-size: 1.1rem;
     }
     .team-flag {
-        width: 36px;
+        width: 54px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
     .match-status-badge {
