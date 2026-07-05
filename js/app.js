@@ -38,19 +38,38 @@ document.addEventListener('DOMContentLoaded', () => {
         return d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
     };
 
+    const formatRelativeDay = (dateString) => {
+        const d = new Date(dateString);
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const target = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        const diff = (target - today) / (1000 * 60 * 60 * 24);
+        
+        if (diff === 0) return 'Hôm nay';
+        if (diff === 1) return 'Ngày mai';
+        
+        const days = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+        return `${days[d.getDay()]}, ${d.getDate()}/${d.getMonth()+1}`;
+    };
+
     const generateFeaturedMatchHTML = (featured, title) => {
         const statusClass = featured.status === 'live' ? 'status-live' : (featured.status === 'finished' ? 'status-finished' : 'status-upcoming');
         let statusText = 'Sắp diễn ra';
         if (featured.status === 'live') statusText = '🔴 Đang diễn ra';
         if (featured.status === 'finished') statusText = 'Kết thúc';
         
-        const homeFlagHTML = featured.home_flag_local 
-            ? `<img src="${featured.home_flag_local}" alt="${featured.home_team} flag" class="team-flag">` 
-            : `<span class="flag-placeholder"></span>`;
+        const homeIsUndetermined = featured.home_team && (featured.home_team.startsWith('Thắng trận') || featured.home_team.startsWith('Thua trận'));
+        const awayIsUndetermined = featured.away_team && (featured.away_team.startsWith('Thắng trận') || featured.away_team.startsWith('Thua trận'));
+        const homeTeamName = homeIsUndetermined ? 'Chưa xác định' : featured.home_team;
+        const awayTeamName = awayIsUndetermined ? 'Chưa xác định' : featured.away_team;
         
-        const awayFlagHTML = featured.away_flag_local 
-            ? `<img src="${featured.away_flag_local}" alt="${featured.away_team} flag" class="team-flag">` 
-            : `<span class="flag-placeholder"></span>`;
+        const homeFlagHTML = homeIsUndetermined || !featured.home_flag_local 
+            ? `<span class="flag-placeholder"></span>` 
+            : `<img src="${featured.home_flag_local}" alt="${homeTeamName} flag" class="team-flag">`;
+        
+        const awayFlagHTML = awayIsUndetermined || !featured.away_flag_local 
+            ? `<span class="flag-placeholder"></span>` 
+            : `<img src="${featured.away_flag_local}" alt="${awayTeamName} flag" class="team-flag">`;
             
         let stageDisplay = featured.stage;
         if (featured.group) stageDisplay += ` &bull; ${featured.group}`;
@@ -75,14 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="match-main">
                     <div class="team team-home">
                         ${homeFlagHTML}
-                        <span class="team-name">${featured.home_team}</span>
+                        <span class="team-name">${homeTeamName}</span>
                     </div>
                     <div class="score-container" style="font-size: 1.5rem;">
                         ${featured.status === 'upcoming' ? 'VS' : (featured.home_score + ' - ' + featured.away_score)}
                     </div>
                     <div class="team team-away">
                         ${awayFlagHTML}
-                        <span class="team-name">${featured.away_team}</span>
+                        <span class="team-name">${awayTeamName}</span>
                     </div>
                 </div>
                 ${linksHTML ? `<div class="links-container" style="justify-content: center; margin-top: 1rem;">${linksHTML}</div>` : ''}
@@ -116,13 +135,18 @@ document.addEventListener('DOMContentLoaded', () => {
             stageDisplay += ` &bull; ${match.group}`;
         }
 
-        const homeFlagHTML = match.home_flag_local 
-            ? `<img src="${match.home_flag_local}" alt="${match.home_team} flag" class="team-flag">` 
-            : `<span class="flag-placeholder"></span>`;
+        const homeIsUndetermined = match.home_team && (match.home_team.startsWith('Thắng trận') || match.home_team.startsWith('Thua trận'));
+        const awayIsUndetermined = match.away_team && (match.away_team.startsWith('Thắng trận') || match.away_team.startsWith('Thua trận'));
+        const homeTeamName = homeIsUndetermined ? 'Chưa xác định' : match.home_team;
+        const awayTeamName = awayIsUndetermined ? 'Chưa xác định' : match.away_team;
+
+        const homeFlagHTML = homeIsUndetermined || !match.home_flag_local 
+            ? `<span class="flag-placeholder"></span>` 
+            : `<img src="${match.home_flag_local}" alt="${homeTeamName} flag" class="team-flag">`;
         
-        const awayFlagHTML = match.away_flag_local 
-            ? `<img src="${match.away_flag_local}" alt="${match.away_team} flag" class="team-flag">` 
-            : `<span class="flag-placeholder"></span>`;
+        const awayFlagHTML = awayIsUndetermined || !match.away_flag_local 
+            ? `<span class="flag-placeholder"></span>` 
+            : `<img src="${match.away_flag_local}" alt="${awayTeamName} flag" class="team-flag">`;
 
         return `
             <div class="match-list-item">
@@ -132,20 +156,62 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="match-main">
                     <div class="team team-home">
                         ${homeFlagHTML}
-                        <span class="team-name">${match.home_team}</span>
+                        <span class="team-name">${homeTeamName}</span>
                     </div>
                     <div class="score-container">
                         ${scoreDisplay}
                     </div>
                     <div class="team team-away">
                         ${awayFlagHTML}
-                        <span class="team-name">${match.away_team}</span>
+                        <span class="team-name">${awayTeamName}</span>
                     </div>
                 </div>
                 <div class="match-stage">
                     ${stageDisplay} &bull; ${formatDay(match.date)}
                 </div>
                 ${linksHTML ? `<div class="links-container">${linksHTML}</div>` : ''}
+            </div>
+        `;
+    };
+
+    const generateCompactMatchListItemHTML = (match) => {
+        let stageDisplay = match.stage;
+        if (match.group) stageDisplay += ` &bull; ${match.group}`;
+
+        const homeIsUndetermined = match.home_team && (match.home_team.startsWith('Thắng trận') || match.home_team.startsWith('Thua trận'));
+        const awayIsUndetermined = match.away_team && (match.away_team.startsWith('Thắng trận') || match.away_team.startsWith('Thua trận'));
+        const homeTeamName = homeIsUndetermined ? 'Chưa xác định' : match.home_team;
+        const awayTeamName = awayIsUndetermined ? 'Chưa xác định' : match.away_team;
+
+        const homeFlagHTML = homeIsUndetermined || !match.home_flag_local 
+            ? `<span class="flag-placeholder" style="width: 20px; height: 14px;"></span>` 
+            : `<img src="${match.home_flag_local}" alt="${homeTeamName} flag" class="cm-flag">`;
+        
+        const awayFlagHTML = awayIsUndetermined || !match.away_flag_local 
+            ? `<span class="flag-placeholder" style="width: 20px; height: 14px;"></span>` 
+            : `<img src="${match.away_flag_local}" alt="${awayTeamName} flag" class="cm-flag">`;
+
+        let mainLink = '#';
+        if (match.links && match.links.live && match.links.live.length > 0) mainLink = match.links.live[0].url;
+        else if (match.links && match.links.replay) mainLink = match.links.replay;
+
+        return `
+            <div class="compact-match-item">
+                <div class="cm-left">
+                    <div class="cm-stage">${stageDisplay}</div>
+                    <div class="cm-team">
+                        ${homeFlagHTML}
+                        <span class="cm-team-name">${homeTeamName}</span>
+                    </div>
+                    <div class="cm-team">
+                        ${awayFlagHTML}
+                        <span class="cm-team-name">${awayTeamName}</span>
+                    </div>
+                </div>
+                <div class="cm-right" style="justify-content: center;">
+                    <div class="cm-day">${formatRelativeDay(match.date)}</div>
+                    <div class="cm-time" style="margin-bottom: 0;">${formatTime(match.date)}</div>
+                </div>
             </div>
         `;
     };
@@ -175,7 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. 4 matches after next match
         const upcoming4 = nextMatch && !liveMatch ? upcomingMatches.slice(1, 5) : upcomingMatches.slice(0, 4);
         if (upcoming4.length > 0) {
-            upcomingMatchesGrid.innerHTML = upcoming4.map(m => generateMatchListItemHTML(m)).join('');
+            document.getElementById('upcoming-matches-grid').className = 'compact-matches-grid';
+            upcomingMatchesGrid.innerHTML = upcoming4.map(m => generateCompactMatchListItemHTML(m)).join('');
         } else {
             document.getElementById('upcoming-matches-section').style.display = 'none';
         }
@@ -243,26 +310,26 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (matchesGrid) {
                 renderFullPage(matchesData);
 
-                // Auto-scroll to the day of the last finished match
-                setTimeout(() => {
-                    const now = new Date();
-                    const sorted = [...matchesData].sort((a, b) => new Date(a.date) - new Date(b.date));
-                    const pastMatches = sorted.filter(m => m.status === 'finished' || (new Date(m.date) < now && m.status !== 'live')).reverse();
-                    const prevMatch = pastMatches.length > 0 ? pastMatches[0] : null;
-                    
-                    if (prevMatch) {
-                        const targetDayStr = formatDay(prevMatch.date);
-                        const dateHeaders = document.querySelectorAll('.date-header');
-                        for (let header of dateHeaders) {
-                            if (header.innerText.includes(targetDayStr)) {
-                                // Offset by 180px to account for the sticky header
-                                const y = header.getBoundingClientRect().top + window.scrollY - 180;
-                                window.scrollTo({top: y, behavior: 'smooth'});
-                                break;
-                            }
+                // Auto-scroll synchronously to avoid visual flash
+                const now = new Date();
+                const sorted = [...matchesData].sort((a, b) => new Date(a.date) - new Date(b.date));
+                const pastMatches = sorted.filter(m => m.status === 'finished' || (new Date(m.date) < now && m.status !== 'live')).reverse();
+                const prevMatch = pastMatches.length > 0 ? pastMatches[0] : null;
+                
+                if (prevMatch) {
+                    const targetDayStr = formatDay(prevMatch.date);
+                    const dateHeaders = document.querySelectorAll('.date-header');
+                    for (let header of dateHeaders) {
+                        if (header.innerText.includes(targetDayStr)) {
+                            const stickyFilters = document.querySelector('.sticky-filters');
+                            // Thêm 20px khoảng cách phụ để nhìn thoáng hơn
+                            const offset = stickyFilters ? stickyFilters.offsetHeight + 20 : 180;
+                            const y = header.getBoundingClientRect().top + window.scrollY - offset;
+                            window.scrollTo({top: y, behavior: 'instant'});
+                            break;
                         }
                     }
-                }, 100);
+                }
             }
         } catch (error) {
             console.error('Error fetching matches:', error);

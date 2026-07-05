@@ -259,7 +259,8 @@ header p {
 
 .team-flag {
     width: 40px;
-    height: auto;
+    aspect-ratio: 4/3;
+    object-fit: cover;
     border-radius: 2px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     display: inline-block;
@@ -486,4 +487,113 @@ footer a:hover {
 
 .featured-match {
     margin-bottom: 2rem;
+}
+
+/* Compact Match Layout */
+.compact-matches-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    background: rgba(30, 41, 59, 0.4);
+    overflow: hidden;
+}
+
+.compact-match-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--glass-border);
+    border-right: 1px solid var(--glass-border);
+}
+
+@media (min-width: 601px) {
+    .compact-match-item:nth-child(even) {
+        border-right: none;
+    }
+    .compact-match-item:nth-last-child(-n+2) {
+        border-bottom: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .compact-matches-grid {
+        grid-template-columns: 1fr;
+    }
+    .compact-match-item {
+        border-right: none;
+    }
+    .compact-match-item:last-child {
+        border-bottom: none;
+    }
+}
+
+.cm-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.cm-stage {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.cm-team {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.cm-flag {
+    width: 20px;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border-radius: 2px;
+}
+
+.cm-team-name {
+    font-weight: 500;
+    font-size: 1rem;
+    color: #fff;
+}
+
+.cm-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    gap: 0.25rem;
+}
+
+.cm-day {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.cm-time {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+
+.btn-more {
+    background: #2a2a35;
+    color: #fff;
+    border-radius: 24px;
+    padding: 0.85rem 3rem;
+    font-weight: 600;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-more:hover {
+    background: #3f3f4e;
 }
