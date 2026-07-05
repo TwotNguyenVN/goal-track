@@ -7,7 +7,7 @@
     --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     --primary: #3b82f6;
     --primary-hover: #2563eb;
-    --live: #ef4444;
+    --live: #3b82f6;
     --finished: #10b981;
     --upcoming: #f59e0b;
     --header-accent: #10b981;
@@ -211,7 +211,7 @@ header p {
     z-index: 1;
 }
 
-.status-live { background: rgba(239, 68, 68, 0.15); color: var(--live); border: 1px solid rgba(239, 68, 68, 0.3); }
+.status-live { background: rgba(59, 130, 246, 0.15); color: var(--live); border: 1px solid rgba(59, 130, 246, 0.3); }
 .status-finished { background: rgba(16, 185, 129, 0.15); color: var(--finished); border: 1px solid rgba(16, 185, 129, 0.3); }
 .status-upcoming { background: rgba(245, 158, 11, 0.15); color: var(--upcoming); border: 1px solid rgba(245, 158, 11, 0.3); }
 
