@@ -2373,8 +2373,8 @@
     "away_team": "Paraguay",
     "stage": "Vòng 32 đội",
     "status": "finished",
-    "home_score": null,
-    "away_score": null,
+    "home_score": 1,
+    "away_score": 1,
     "stadium": "TBD",
     "links": {
       "live": [
@@ -2405,8 +2405,8 @@
     "away_team": "Morocco",
     "stage": "Vòng 32 đội",
     "status": "finished",
-    "home_score": null,
-    "away_score": null,
+    "home_score": 1,
+    "away_score": 1,
     "stadium": "TBD",
     "links": {
       "live": [
@@ -2725,8 +2725,8 @@
     "away_team": "Ai Cập",
     "stage": "Vòng 32 đội",
     "status": "finished",
-    "home_score": null,
-    "away_score": null,
+    "home_score": 1,
+    "away_score": 1,
     "stadium": "TBD",
     "links": {
       "live": [
