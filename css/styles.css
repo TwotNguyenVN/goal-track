@@ -305,11 +305,11 @@ header p {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
+    gap: 0.3rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 20px;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-decoration: none;
     transition-property: transform, background-color, box-shadow;
     transition-duration: 200ms;
@@ -415,7 +415,8 @@ header p {
     .btn {
         padding: 0.35rem 0.6rem;
         font-size: 0.75rem;
-        min-height: 32px;
+        min-height: 28px;
+        border-radius: 16px;
     }
     .stage-tab {
         padding: 0.5rem 1rem;
