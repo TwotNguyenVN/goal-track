@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (matchesGrid) matchesGrid.innerHTML = '<div class="loading">Đang tải dữ liệu trận đấu...</div>';
             
-            const response = await fetch('data/matches.json');
+            const response = await fetch(`data/matches.json?t=${new Date().getTime()}`);
             if (!response.ok) throw new Error('Không thể tải dữ liệu');
             
             matchesData = await response.json();
