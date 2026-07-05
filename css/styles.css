@@ -294,11 +294,18 @@ header p {
 .links-container {
     display: flex;
     gap: 0.4rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
     justify-content: center;
     width: 100%;
     border-top: 1px solid var(--glass-border);
     padding-top: 0.75rem;
+    padding-bottom: 0.25rem;
+}
+.links-container::-webkit-scrollbar {
+    display: none;
 }
 
 .btn {
@@ -310,6 +317,8 @@ header p {
     border-radius: 20px;
     font-weight: 600;
     font-size: 0.8rem;
+    white-space: nowrap;
+    flex-shrink: 0;
     text-decoration: none;
     transition-property: transform, background-color, box-shadow;
     transition-duration: 200ms;
@@ -411,12 +420,13 @@ header p {
     .links-container {
         padding-top: 0.5rem;
         gap: 0.35rem;
+        justify-content: flex-start;
     }
     .btn {
-        padding: 0.35rem 0.6rem;
+        padding: 0.3rem 0.5rem;
         font-size: 0.75rem;
-        min-height: 28px;
-        border-radius: 16px;
+        min-height: 26px;
+        border-radius: 14px;
     }
     .stage-tab {
         padding: 0.5rem 1rem;
