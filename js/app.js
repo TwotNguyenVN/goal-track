@@ -113,6 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
     };
 
+    let initialLoad = true;
+
     // Render matches
     const renderMatches = (matches) => {
         if (matches.length === 0) {
@@ -206,6 +208,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         matchesGrid.innerHTML = html;
+
+        if (initialLoad) {
+            scrollToLatestMatchDay(grouped);
+            initialLoad = false;
+        }
+    };
+
+    const scrollToLatestMatchDay = (grouped) => {
+        const today = new Date();
+        today.setHours(23, 59, 59, 999); // End of today
+
+        let targetDateStr = null;
+        let targetDateObj = new Date(0); // Start epoch
+
+        for (const [dayStr, dayMatches] of Object.entries(grouped)) {
+            const matchDate = new Date(dayMatches[0].date);
+            matchDate.setHours(0, 0, 0, 0);
+
+            // Find the most recent date that is less than or equal to today
+            if (matchDate <= today) {
+                if (matchDate > targetDateObj) {
+                    targetDateObj = matchDate;
+                    targetDateStr = dayStr;
+                }
+            }
+        }
+
+        // If no past/current matches exist (e.g. tournament hasn't started), scroll to the very first match
+        if (!targetDateStr) {
+            targetDateStr = Object.keys(grouped)[0];
+        }
+
+        if (targetDateStr) {
+            const headers = document.querySelectorAll('.date-header');
+            for (const header of headers) {
+                if (header.textContent.includes(targetDateStr)) {
+                    // Small delay to ensure rendering is completely done
+                    setTimeout(() => {
+                        header.parentElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 500); // 0.5s delay for smooth UX
+                    break;
+                }
+            }
+        }
     };
 
     // Filter logic
