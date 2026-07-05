@@ -21,36 +21,16 @@
         </header>
 
         <main>
-            <div id="upcoming-match-section" class="featured-match"></div>
-
-            <div class="controls">
-                <input type="text" id="search" class="search-input" placeholder="Tìm kiếm đội bóng...">
-                <select id="status-filter" class="filter-select">
-                    <option value="all">Tất cả trạng thái</option>
-                    <option value="live">Đang diễn ra</option>
-                    <option value="upcoming">Sắp tới</option>
-                    <option value="finished">Đã kết thúc</option>
-                </select>
+            <div id="next-match-section" class="featured-match"></div>
+            <div id="prev-match-section" class="featured-match" style="margin-top: 2rem;"></div>
+            
+            <div id="upcoming-matches-section" style="margin-top: 3rem;">
+                <h2 class="date-header"><span class="date-bar"></span> Các trận đấu tiếp theo</h2>
+                <div id="upcoming-matches-grid" class="matches-list"></div>
             </div>
 
-            <div class="stage-tabs-container">
-                <div class="stage-tabs" id="stage-tabs">
-                    <button class="stage-tab active" data-stage="all">Tất cả</button>
-                    <button class="stage-tab" data-stage="Vòng đấu bảng">Vòng bảng</button>
-                    <button class="stage-tab" data-stage="Vòng 32 đội">32 đội</button>
-                    <button class="stage-tab" data-stage="Vòng 16 đội">16 đội</button>
-                    <button class="stage-tab" data-stage="Tứ kết">Tứ kết</button>
-                    <button class="stage-tab" data-stage="Bán kết">Bán kết</button>
-                    <button class="stage-tab" data-stage="Hạng ba">Hạng 3</button>
-                    <button class="stage-tab" data-stage="Chung kết">Chung kết</button>
-                </div>
-            </div>
-
-            <div id="matches-grid" class="matches-grid">
-                <!-- Data will be populated here by JavaScript -->
-                <noscript>
-                    <div class="error">Vui lòng bật JavaScript để xem lịch thi đấu và kết quả.</div>
-                </noscript>
+            <div style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
+                <a href="matches.html" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.2rem;">Xem các trận đấu khác</a>
             </div>
         </main>
     </div>

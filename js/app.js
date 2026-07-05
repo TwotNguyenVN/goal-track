@@ -1,92 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Elements for index-copy.html
     const matchesGrid = document.getElementById('matches-grid');
     const searchInput = document.getElementById('search');
     const filterSelect = document.getElementById('status-filter');
+    const stageTabs = document.querySelectorAll('.stage-tab');
+
+    // Elements for index.html (Home)
+    const nextMatchSection = document.getElementById('next-match-section');
+    const prevMatchSection = document.getElementById('prev-match-section');
+    const upcomingMatchesGrid = document.getElementById('upcoming-matches-grid');
 
     let matchesData = [];
-
-    // Fetch data
-    const fetchMatches = async () => {
-        try {
-            // Hiển thị trạng thái loading
-            matchesGrid.innerHTML = '<div class="loading">Đang tải dữ liệu trận đấu...</div>';
-            
-            // cache busting for local files can be skipped, but helpful if data changes frequently
-            const response = await fetch('data/matches.json');
-            if (!response.ok) throw new Error('Không thể tải dữ liệu');
-            
-            matchesData = await response.json();
-            renderFeaturedMatch(matchesData);
-            renderMatches(matchesData);
-        } catch (error) {
-            console.error('Error fetching matches:', error);
-            matchesGrid.innerHTML = '<div class="error">Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.</div>';
-        }
-    };
-
-    // Render featured match
-    const renderFeaturedMatch = (matches) => {
-        const featuredSection = document.getElementById('upcoming-match-section');
-        const now = new Date();
-        
-        // Find first live match or next upcoming match
-        let featured = matches.find(m => m.status === 'live');
-        if (!featured) {
-            const upcoming = matches.filter(m => m.status === 'upcoming' && new Date(m.date) > now)
-                                    .sort((a,b) => new Date(a.date) - new Date(b.date));
-            if (upcoming.length > 0) featured = upcoming[0];
-        }
-
-        if (featured) {
-            const statusClass = featured.status === 'live' ? 'status-live' : 'status-upcoming';
-            const statusText = featured.status === 'live' ? '🔴 Đang diễn ra' : 'Sắp diễn ra';
-            
-            const homeFlagHTML = featured.home_flag_local 
-                ? `<img src="${featured.home_flag_local}" alt="${featured.home_team} flag" class="team-flag">` 
-                : `<span class="flag-placeholder"></span>`;
-            
-            const awayFlagHTML = featured.away_flag_local 
-                ? `<img src="${featured.away_flag_local}" alt="${featured.away_team} flag" class="team-flag">` 
-                : `<span class="flag-placeholder"></span>`;
-                
-            let stageDisplay = featured.stage;
-            if (featured.group) stageDisplay += ` &bull; ${featured.group}`;
-
-            let linksHTML = '';
-            if (featured.links && featured.links.live && featured.links.live.length > 0) {
-                featured.links.live.forEach(liveLink => {
-                    linksHTML += `<a href="${liveLink.url}" target="_blank" class="btn btn-primary" title="Xem trực tiếp">▶ ${liveLink.name}</a>`;
-                });
-            }
-
-            featuredSection.innerHTML = `
-                <div class="featured-header">Trận đấu tâm điểm</div>
-                <div class="match-list-item featured-item">
-                    <div class="match-status-badge ${statusClass}">${statusText}</div>
-                    <div class="match-stage" style="margin-bottom: 0.5rem; text-align: center;">
-                        ${stageDisplay} &bull; ${formatTime(featured.date)} - ${formatDay(featured.date)}
-                    </div>
-                    <div class="match-main">
-                        <div class="team team-home">
-                            ${homeFlagHTML}
-                            <span class="team-name">${featured.home_team}</span>
-                        </div>
-                        <div class="score-container" style="font-size: 1.5rem;">
-                            ${featured.status === 'upcoming' ? 'VS' : (featured.home_score + ' - ' + featured.away_score)}
-                        </div>
-                        <div class="team team-away">
-                            ${awayFlagHTML}
-                            <span class="team-name">${featured.away_team}</span>
-                        </div>
-                    </div>
-                    ${linksHTML ? `<div class="links-container" style="justify-content: center; margin-top: 1rem;">${linksHTML}</div>` : ''}
-                </div>
-            `;
-            featuredSection.style.display = 'block';
-        } else {
-            featuredSection.style.display = 'none';
-        }
-    };
+    let currentStageFilter = 'all';
 
     // Format date
     const formatDate = (dateString) => {
@@ -113,15 +38,157 @@ document.addEventListener('DOMContentLoaded', () => {
         return d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
     };
 
-    let initialLoad = true;
+    const generateFeaturedMatchHTML = (featured, title) => {
+        const statusClass = featured.status === 'live' ? 'status-live' : (featured.status === 'finished' ? 'status-finished' : 'status-upcoming');
+        let statusText = 'Sắp diễn ra';
+        if (featured.status === 'live') statusText = '🔴 Đang diễn ra';
+        if (featured.status === 'finished') statusText = 'Kết thúc';
+        
+        const homeFlagHTML = featured.home_flag_local 
+            ? `<img src="${featured.home_flag_local}" alt="${featured.home_team} flag" class="team-flag">` 
+            : `<span class="flag-placeholder"></span>`;
+        
+        const awayFlagHTML = featured.away_flag_local 
+            ? `<img src="${featured.away_flag_local}" alt="${featured.away_team} flag" class="team-flag">` 
+            : `<span class="flag-placeholder"></span>`;
+            
+        let stageDisplay = featured.stage;
+        if (featured.group) stageDisplay += ` &bull; ${featured.group}`;
 
-    // Render matches
-    const renderMatches = (matches) => {
+        let linksHTML = '';
+        if (featured.links && featured.links.live && featured.links.live.length > 0) {
+            featured.links.live.forEach(liveLink => {
+                linksHTML += `<a href="${liveLink.url}" target="_blank" class="btn btn-primary" title="Xem trực tiếp">▶ ${liveLink.name}</a>`;
+            });
+        }
+        if (featured.links && featured.links.replay) {
+            linksHTML += `<a href="${featured.links.replay}" target="_blank" class="btn btn-secondary" title="Xem lại toàn trận">⏪ Xem lại</a>`;
+        }
+
+        return `
+            <div class="featured-header">${title}</div>
+            <div class="match-list-item featured-item">
+                <div class="match-status-badge ${statusClass}">${statusText}</div>
+                <div class="match-stage" style="margin-bottom: 0.5rem; text-align: center;">
+                    ${stageDisplay} &bull; ${formatTime(featured.date)} - ${formatDay(featured.date)}
+                </div>
+                <div class="match-main">
+                    <div class="team team-home">
+                        ${homeFlagHTML}
+                        <span class="team-name">${featured.home_team}</span>
+                    </div>
+                    <div class="score-container" style="font-size: 1.5rem;">
+                        ${featured.status === 'upcoming' ? 'VS' : (featured.home_score + ' - ' + featured.away_score)}
+                    </div>
+                    <div class="team team-away">
+                        ${awayFlagHTML}
+                        <span class="team-name">${featured.away_team}</span>
+                    </div>
+                </div>
+                ${linksHTML ? `<div class="links-container" style="justify-content: center; margin-top: 1rem;">${linksHTML}</div>` : ''}
+            </div>
+        `;
+    };
+
+    const generateMatchListItemHTML = (match) => {
+        const statusClass = `status-${match.status}`;
+        const statusText = match.status === 'live' ? 'Đang đá' : 
+                         match.status === 'finished' ? 'Kết thúc' : 'Dự đoán';
+        
+        const scoreDisplay = match.status === 'upcoming' 
+            ? `<span class="time-only">${formatTime(match.date)}</span>`
+            : `<span class="score-only">${match.home_score} - ${match.away_score}</span>`;
+
+        let linksHTML = '';
+        if (match.links) {
+            if (match.links.live && match.links.live.length > 0) {
+                match.links.live.forEach(liveLink => {
+                    linksHTML += `<a href="${liveLink.url}" target="_blank" class="btn btn-primary" title="Xem trực tiếp">▶ ${liveLink.name}</a>`;
+                });
+            }
+            if (match.links.replay) {
+                linksHTML += `<a href="${match.links.replay}" target="_blank" class="btn btn-secondary" title="Xem lại toàn trận">⏪ Xem lại</a>`;
+            }
+        }
+
+        let stageDisplay = match.stage;
+        if (match.group) {
+            stageDisplay += ` &bull; ${match.group}`;
+        }
+
+        const homeFlagHTML = match.home_flag_local 
+            ? `<img src="${match.home_flag_local}" alt="${match.home_team} flag" class="team-flag">` 
+            : `<span class="flag-placeholder"></span>`;
+        
+        const awayFlagHTML = match.away_flag_local 
+            ? `<img src="${match.away_flag_local}" alt="${match.away_team} flag" class="team-flag">` 
+            : `<span class="flag-placeholder"></span>`;
+
+        return `
+            <div class="match-list-item">
+                <div class="match-status-badge ${statusClass}">
+                    ${match.status === 'live' ? '🔴 ' : ''}${statusText}
+                </div>
+                <div class="match-main">
+                    <div class="team team-home">
+                        ${homeFlagHTML}
+                        <span class="team-name">${match.home_team}</span>
+                    </div>
+                    <div class="score-container">
+                        ${scoreDisplay}
+                    </div>
+                    <div class="team team-away">
+                        ${awayFlagHTML}
+                        <span class="team-name">${match.away_team}</span>
+                    </div>
+                </div>
+                <div class="match-stage">
+                    ${stageDisplay} &bull; ${formatDay(match.date)}
+                </div>
+                ${linksHTML ? `<div class="links-container">${linksHTML}</div>` : ''}
+            </div>
+        `;
+    };
+
+    const renderHomePage = (matches) => {
+        const now = new Date();
+        const sortedMatches = [...matches].sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        const upcomingMatches = sortedMatches.filter(m => m.status === 'upcoming' && new Date(m.date) >= now);
+        let liveMatch = sortedMatches.find(m => m.status === 'live');
+        
+        // 1. Next match
+        let nextMatch = liveMatch || (upcomingMatches.length > 0 ? upcomingMatches[0] : null);
+        if (nextMatch) {
+            nextMatchSection.innerHTML = generateFeaturedMatchHTML(nextMatch, 'Trận đấu tiếp theo');
+            nextMatchSection.style.display = 'block';
+        }
+
+        // 2. Previous match
+        const pastMatches = sortedMatches.filter(m => m.status === 'finished' || (new Date(m.date) < now && m.status !== 'live')).reverse();
+        const prevMatch = pastMatches.length > 0 ? pastMatches[0] : null;
+        if (prevMatch) {
+            prevMatchSection.innerHTML = generateFeaturedMatchHTML(prevMatch, 'Trận đấu trước đó');
+            prevMatchSection.style.display = 'block';
+        }
+
+        // 3. 4 matches after next match
+        const upcoming4 = nextMatch && !liveMatch ? upcomingMatches.slice(1, 5) : upcomingMatches.slice(0, 4);
+        if (upcoming4.length > 0) {
+            upcomingMatchesGrid.innerHTML = upcoming4.map(m => generateMatchListItemHTML(m)).join('');
+        } else {
+            document.getElementById('upcoming-matches-section').style.display = 'none';
+        }
+    };
+
+    const renderFullPage = (matches) => {
+        if (!matchesGrid) return;
         if (matches.length === 0) {
             matchesGrid.innerHTML = '<div class="loading">Không tìm thấy trận đấu nào phù hợp.</div>';
             return;
         }
 
+        // Group matches by day
         const grouped = {};
         matches.forEach(match => {
             const dayStr = formatDay(match.date);
@@ -131,168 +198,22 @@ document.addEventListener('DOMContentLoaded', () => {
             grouped[dayStr].push(match);
         });
 
-        // Determine if we are filtering
-        const isFiltered = searchInput.value.trim() !== '' || 
-                           filterSelect.value !== 'all' || 
-                           currentStageFilter !== 'all';
-
-        // Find target date (today or most recent past) for splitting
-        let targetDateStr = null;
-        if (!isFiltered) {
-            const today = new Date();
-            today.setHours(23, 59, 59, 999);
-            let targetDateObj = new Date(0);
-
-            for (const [dayStr, dayMatches] of Object.entries(grouped)) {
-                const matchDate = new Date(dayMatches[0].date);
-                matchDate.setHours(0, 0, 0, 0);
-                if (matchDate <= today && matchDate > targetDateObj) {
-                    targetDateObj = matchDate;
-                    targetDateStr = dayStr;
-                }
-            }
-            if (!targetDateStr && Object.keys(grouped).length > 0) {
-                targetDateStr = Object.keys(grouped)[0];
-            }
-        }
-
-        let pastHtml = '';
-        let futureHtml = '';
-        let pastMatchesCount = 0;
-        let isPast = !isFiltered; // If filtered, nothing is "past" (we show everything)
-
+        let html = '';
         for (const [dayStr, dayMatches] of Object.entries(grouped)) {
-            if (isPast && dayStr === targetDateStr) {
-                isPast = false;
-            }
-
-            let dayHtml = `
+            html += `
                 <div class="date-section">
                     <h2 class="date-header"><span class="date-bar"></span> ${dayStr}</h2>
                     <div class="matches-list">
-            `;
-            
-            dayMatches.forEach(match => {
-                const statusClass = `status-${match.status}`;
-                const statusText = match.status === 'live' ? 'Đang đá' : 
-                                 match.status === 'finished' ? 'Kết thúc' : 'Dự đoán';
-                
-                const scoreDisplay = match.status === 'upcoming' 
-                    ? `<span class="time-only">${formatTime(match.date)}</span>`
-                    : `<span class="score-only">${match.home_score} - ${match.away_score}</span>`;
-
-                let linksHTML = '';
-                if (match.links) {
-                    if (match.links.live && match.links.live.length > 0) {
-                        match.links.live.forEach(liveLink => {
-                            linksHTML += `<a href="${liveLink.url}" target="_blank" class="btn btn-primary" title="Xem trực tiếp">▶ ${liveLink.name}</a>`;
-                        });
-                    }
-                    if (match.links.replay) {
-                        linksHTML += `<a href="${match.links.replay}" target="_blank" class="btn btn-secondary" title="Xem lại toàn trận">⏪ Xem lại</a>`;
-                    }
-                }
-
-                let stageDisplay = match.stage;
-                if (match.group) {
-                    stageDisplay += ` &bull; ${match.group}`;
-                }
-
-                const homeFlagHTML = match.home_flag_local 
-                    ? `<img src="${match.home_flag_local}" alt="${match.home_team} flag" class="team-flag">` 
-                    : `<span class="flag-placeholder"></span>`;
-                
-                const awayFlagHTML = match.away_flag_local 
-                    ? `<img src="${match.away_flag_local}" alt="${match.away_team} flag" class="team-flag">` 
-                    : `<span class="flag-placeholder"></span>`;
-
-                dayHtml += `
-                    <div class="match-list-item">
-                        <div class="match-status-badge ${statusClass}">
-                            ${match.status === 'live' ? '🔴 ' : ''}${statusText}
-                        </div>
-                        <div class="match-main">
-                            <div class="team team-home">
-                                ${homeFlagHTML}
-                                <span class="team-name">${match.home_team}</span>
-                            </div>
-                            <div class="score-container">
-                                ${scoreDisplay}
-                            </div>
-                            <div class="team team-away">
-                                ${awayFlagHTML}
-                                <span class="team-name">${match.away_team}</span>
-                            </div>
-                        </div>
-                        <div class="match-stage">
-                            ${stageDisplay}
-                        </div>
-                        ${linksHTML ? `<div class="links-container">${linksHTML}</div>` : ''}
-                    </div>
-                `;
-
-                if (isPast) {
-                    pastMatchesCount++;
-                }
-            });
-            
-            dayHtml += `
-                    </div>
-                </div>
-            `;
-
-            if (isPast) {
-                pastHtml += dayHtml;
-            } else {
-                futureHtml += dayHtml;
-            }
-        }
-
-        let finalHtml = '';
-        
-        if (pastMatchesCount > 0) {
-            finalHtml += `
-                <div class="past-matches-wrapper">
-                    <button id="toggle-past-matches" class="btn btn-secondary toggle-past-btn" style="width: 100%; margin-bottom: 2rem; padding: 1rem; font-size: 1rem;">
-                        ⏬ Xem các trận đấu trước đó (${pastMatchesCount} trận)
-                    </button>
-                    <div id="past-matches-container" style="display: none;">
-                        ${pastHtml}
+                        ${dayMatches.map(m => generateMatchListItemHTML(m)).join('')}
                     </div>
                 </div>
             `;
         }
-
-        finalHtml += futureHtml;
-
-        matchesGrid.innerHTML = finalHtml;
-
-        // Attach event listener to the toggle button if it exists
-        const toggleBtn = document.getElementById('toggle-past-matches');
-        const pastContainer = document.getElementById('past-matches-container');
-        
-        if (toggleBtn && pastContainer) {
-            toggleBtn.addEventListener('click', () => {
-                const isHidden = pastContainer.style.display === 'none';
-                if (isHidden) {
-                    pastContainer.style.display = 'block';
-                    toggleBtn.innerHTML = `⏫ Thu gọn các trận đấu trước đó`;
-                } else {
-                    pastContainer.style.display = 'none';
-                    toggleBtn.innerHTML = `⏬ Xem các trận đấu trước đó (${pastMatchesCount} trận)`;
-                    // Scroll back up slightly to avoid losing context when collapsing
-                    toggleBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
+        matchesGrid.innerHTML = html;
     };
 
-
-
-    // Filter logic
-    let currentStageFilter = 'all';
-
     const filterMatches = () => {
+        if (!matchesGrid) return;
         const searchTerm = searchInput.value.toLowerCase();
         const statusFilter = filterSelect.value;
 
@@ -305,26 +226,64 @@ document.addEventListener('DOMContentLoaded', () => {
             return matchesSearch && matchesStatus && matchesStage;
         });
 
-        renderMatches(filtered);
+        renderFullPage(filtered);
     };
 
-    // Tabs logic
-    const stageTabs = document.querySelectorAll('.stage-tab');
-    stageTabs.forEach(tab => {
-        tab.addEventListener('click', (e) => {
-            // Remove active class from all
-            stageTabs.forEach(t => t.classList.remove('active'));
-            // Add to clicked
-            e.target.classList.add('active');
+    const fetchMatches = async () => {
+        try {
+            if (matchesGrid) matchesGrid.innerHTML = '<div class="loading">Đang tải dữ liệu trận đấu...</div>';
             
-            currentStageFilter = e.target.getAttribute('data-stage');
-            filterMatches();
-        });
-    });
+            const response = await fetch('data/matches.json');
+            if (!response.ok) throw new Error('Không thể tải dữ liệu');
+            
+            matchesData = await response.json();
+            
+            if (nextMatchSection) {
+                renderHomePage(matchesData);
+            } else if (matchesGrid) {
+                renderFullPage(matchesData);
 
-    // Event listeners
-    searchInput.addEventListener('input', filterMatches);
-    filterSelect.addEventListener('change', filterMatches);
+                // Auto-scroll to the day of the last finished match
+                setTimeout(() => {
+                    const now = new Date();
+                    const sorted = [...matchesData].sort((a, b) => new Date(a.date) - new Date(b.date));
+                    const pastMatches = sorted.filter(m => m.status === 'finished' || (new Date(m.date) < now && m.status !== 'live')).reverse();
+                    const prevMatch = pastMatches.length > 0 ? pastMatches[0] : null;
+                    
+                    if (prevMatch) {
+                        const targetDayStr = formatDay(prevMatch.date);
+                        const dateHeaders = document.querySelectorAll('.date-header');
+                        for (let header of dateHeaders) {
+                            if (header.innerText.includes(targetDayStr)) {
+                                // Offset by 180px to account for the sticky header
+                                const y = header.getBoundingClientRect().top + window.scrollY - 180;
+                                window.scrollTo({top: y, behavior: 'smooth'});
+                                break;
+                            }
+                        }
+                    }
+                }, 100);
+            }
+        } catch (error) {
+            console.error('Error fetching matches:', error);
+            if (matchesGrid) matchesGrid.innerHTML = '<div class="error">Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.</div>';
+        }
+    };
+
+    // Event listeners for index-copy.html
+    if (searchInput) searchInput.addEventListener('input', filterMatches);
+    if (filterSelect) filterSelect.addEventListener('change', filterMatches);
+    
+    if (stageTabs.length > 0) {
+        stageTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                stageTabs.forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                currentStageFilter = e.target.getAttribute('data-stage');
+                filterMatches();
+            });
+        });
+    }
 
     // Initial load
     fetchMatches();
