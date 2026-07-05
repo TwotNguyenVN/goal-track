@@ -418,14 +418,19 @@ header p {
         font-size: 0.8rem;
     }
     .links-container {
-        padding-top: 0.5rem;
-        gap: 0.35rem;
+        padding-top: 0.75rem;
+        padding-bottom: 0.25rem;
+        gap: 0.4rem;
+        justify-content: center;
     }
     .btn {
-        padding: 0.3rem 0.5rem;
+        padding: 0.35rem 0;
         font-size: 0.75rem;
-        min-height: 26px;
+        min-height: 28px;
         border-radius: 14px;
+        flex: 1;
+        text-align: center;
+        justify-content: center;
     }
     .stage-tab {
         padding: 0.5rem 1rem;
