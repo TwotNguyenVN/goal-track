@@ -3280,9 +3280,9 @@
     "home_team": "Mexico",
     "away_team": "Anh",
     "stage": "Vòng 16 đội",
-    "status": "upcoming",
-    "home_score": null,
-    "away_score": null,
+    "status": "finished",
+    "home_score": 1,
+    "away_score": 2,
     "stadium": "TBD",
     "links": {
       "live": [
