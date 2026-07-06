@@ -3316,9 +3316,9 @@
     "home_team": "Bồ Đào Nha",
     "away_team": "Tây Ban Nha",
     "stage": "Vòng 16 đội",
-    "status": "upcoming",
-    "home_score": null,
-    "away_score": null,
+    "status": "finished",
+    "home_score": 0,
+    "away_score": 1,
     "stadium": "TBD",
     "links": {
       "live": [
