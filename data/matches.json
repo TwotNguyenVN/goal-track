@@ -3389,7 +3389,7 @@
     "away_team": "Ai Cập",
     "stage": "Vòng 16 đội",
     "status": "finished",
-    "home_score": 2,
+    "home_score": 3,
     "away_score": 2,
     "stadium": "TBD",
     "links": {
@@ -3424,9 +3424,9 @@
     "home_team": "Thụy Sĩ",
     "away_team": "Colombia",
     "stage": "Vòng 16 đội",
-    "status": "upcoming",
-    "home_score": null,
-    "away_score": null,
+    "status": "finished",
+    "home_score": 0,
+    "away_score": 0,
     "stadium": "TBD",
     "links": {
       "live": [
