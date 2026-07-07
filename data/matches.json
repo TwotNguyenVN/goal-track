@@ -3388,9 +3388,9 @@
     "home_team": "Argentina",
     "away_team": "Ai Cập",
     "stage": "Vòng 16 đội",
-    "status": "upcoming",
-    "home_score": null,
-    "away_score": null,
+    "status": "finished",
+    "home_score": 2,
+    "away_score": 2,
     "stadium": "TBD",
     "links": {
       "live": [
