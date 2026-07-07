@@ -3352,9 +3352,9 @@
     "home_team": "Mỹ",
     "away_team": "Bỉ",
     "stage": "Vòng 16 đội",
-    "status": "upcoming",
-    "home_score": null,
-    "away_score": null,
+    "status": "finished",
+    "home_score": 1,
+    "away_score": 3,
     "stadium": "TBD",
     "links": {
       "live": [
